@@ -1,0 +1,6 @@
+.totals-table-wrapper {
+    padding: 10px;
+    margin-left: 20rem;
+    margin-top: 80px;
+    flex-direction: row;
+}

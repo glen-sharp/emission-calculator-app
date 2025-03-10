@@ -149,7 +149,8 @@ python manage.py test emission_calculator_backend/tests --verbosity=2
 1. Add foregn key constraint between tables and query the Scope and Category through that
     - Means that most up-to-date Scope and Category is used
     - Couldn't get done now as don't know if 'lookup_identifier' is unique so can't just filter on that without using unit field
-2. Have 'Raw' layer storage to query input files
+    - Also results in extra table to be queried, potentially resulting API being less performant
+2. Split database into "raw" and "conform" instances to allow raw data to be queries alongside transformed data
 3. Use environment variables for variables in `config.py` file
 
 
@@ -157,8 +158,6 @@ TODO:
 - Allow admin to add or remove data
 - Unit tests
 - logging
-- Document data refresh script
-- Add comments
 - Start up instructions, potentially containers?
 - Create data model image for tables
 

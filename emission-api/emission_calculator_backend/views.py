@@ -14,6 +14,7 @@ def emissions(request) -> Response:
     """
     Function returning emission data for each activity
     """
+
     try:
         # Query for all air travel emission info
         air_travel = models.AirTravel.objects.values(
@@ -32,7 +33,7 @@ def emissions(request) -> Response:
         )
 
         # Query for all electricity emission info
-        electricity = models.Electricty.objects.values(
+        electricity = models.Electricity.objects.values(
             "co2e",
             "scope",
             "category",
@@ -42,12 +43,16 @@ def emissions(request) -> Response:
         # Union all tables together
         output = air_travel.union(purchased_goods_and_services, electricity, all=True).order_by("-co2e")
 
-        # Calculate total CO2e values for each activity
-        air_travel_total = models.AirTravel.objects.aggregate(Sum("co2e"))["co2e__sum"]
+        # Calculate total CO2e values for each activity. If None is returned, default to 0
+        air_travel_total = models.AirTravel.objects.aggregate(Sum("co2e"))["co2e__sum"] \
+            if models.AirTravel.objects.aggregate(Sum("co2e"))["co2e__sum"] else 0
         purchased_goods_and_services_total = models.PurchasedGoodsAndServices.objects.aggregate(
             Sum("co2e"),
-        )["co2e__sum"]
-        electricity_total = models.Electricty.objects.aggregate(Sum("co2e"))["co2e__sum"]
+        )["co2e__sum"] if models.PurchasedGoodsAndServices.objects.aggregate(
+            Sum("co2e"),
+        )["co2e__sum"] else 0
+        electricity_total = models.Electricity.objects.aggregate(Sum("co2e"))["co2e__sum"] \
+            if models.Electricity.objects.aggregate(Sum("co2e"))["co2e__sum"] else 0
 
         # Calculate total CO2e across all activities
         total = air_travel_total + purchased_goods_and_services_total + electricity_total

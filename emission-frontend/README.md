@@ -26,3 +26,25 @@ docker build . -t emission-frontend
 
 docker run -p 3000:80 emission-frontend:latest
 ```
+
+## Interacting with Emission Data
+
+### Sorting data by column
+
+To sort on a specific column, hover next to the column name, and click the arrow
+
+![sort image](images/sort_data.png)
+
+### Filtering data
+
+To filter on a specific field, click the menu on the right of the column
+
+![filter image 1](images/filter_1.png)
+
+Select `filter`
+
+![filter image 2](images/filter_2.png)
+
+Select the column you would like to filter, and type the filter value
+
+![filter image 3](images/filter_3.png)

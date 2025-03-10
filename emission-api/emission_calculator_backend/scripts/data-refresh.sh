@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 rm db.sqlite3
 echo SQLite DB deleted
 echo

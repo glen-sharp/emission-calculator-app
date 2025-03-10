@@ -12,6 +12,7 @@ class EmissionFactors(models.Model):
 
     class Meta:
         unique_together = (("activity", "lookup_identifier", "unit"))
+        verbose_name_plural = "Emission Factors"
 
 
 class AirTravel(models.Model):
@@ -27,6 +28,9 @@ class AirTravel(models.Model):
     scope = models.IntegerField(null=False)
     category = models.IntegerField(null=True)
 
+    class Meta:
+        verbose_name_plural = "Air Travel"
+
 
 class PurchasedGoodsAndServices(models.Model):
     id = models.AutoField(primary_key=True)
@@ -39,8 +43,11 @@ class PurchasedGoodsAndServices(models.Model):
     scope = models.IntegerField(null=False)
     category = models.IntegerField(null=True)
 
+    class Meta:
+        verbose_name_plural = "Purchased Goods and Services"
 
-class Electricty(models.Model):
+
+class Electricity(models.Model):
     id = models.AutoField(primary_key=True)
     activity = models.CharField(max_length=200, null=False)
     date = models.DateField(null=False)
@@ -50,3 +57,6 @@ class Electricty(models.Model):
     co2e = models.FloatField(null=False)
     scope = models.IntegerField(null=False)
     category = models.IntegerField(null=True)
+
+    class Meta:
+        verbose_name_plural = "Electricity"

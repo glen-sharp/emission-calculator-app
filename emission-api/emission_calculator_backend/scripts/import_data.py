@@ -13,6 +13,10 @@ logger = logging.getLogger("root")
 def _data_ingest(ingest_folder_path: str) -> list:
     """
     Reusable component to find CSV file paths in a directory and return the content
+
+    :param ingest_folder_path: Folder path containing files to be ingested
+
+    :return: Array with objects containing CSV data
     """
     # Find all file paths in ingest folder with .csv extension
     file_paths = [
@@ -36,8 +40,10 @@ def _data_ingest(ingest_folder_path: str) -> list:
 
 def _emission_factor_data_ingest(emission_factor_path: str) -> None:
     """
-    Function to imgest emission factor data via CSV file.
+    Function to ingest emission factor data via CSV file.
     It ingests all files in the emission factor ingest folder
+
+    :param emission_factor_path: File path containing emission factor files
     """
     for file in _data_ingest(emission_factor_path):
         for emission_factor in file:
@@ -58,14 +64,15 @@ def _emission_factor_data_ingest(emission_factor_path: str) -> None:
             else:
                 logger.error(f"Ingest data validation failed. Data: {emission_factor}")
                 continue
-    logger.debug("File ingest complete")
-    return
+    logger.debug("Emission factor file ingest complete")
 
 
 def _air_travel_data_ingest(air_travel_path: str) -> None:
     """
-    Function to imgest Air Travel emissions data via CSV file.
+    Function to ingest Air Travel emissions data via CSV file.
     It ingests all files in the Air Travel ingest folder
+
+    :param air_travel_path: File path containing air travel emission files
     """
     for file in _data_ingest(air_travel_path):
         for air_travel in file:
@@ -130,13 +137,15 @@ def _air_travel_data_ingest(air_travel_path: str) -> None:
                 logger.error(f"Ingest data validation failed. Data: {air_travel}, " +
                              f"Reason: {air_travel_serializer.errors}")
                 continue
-        logger.debug("File ingest complete")
+    logger.debug("Air travel file ingest complete")
 
 
 def _good_and_services_data_ingest(goods_services_path: str) -> None:
     """
-    Function to imgest Purchased Goods and Services Emission data via CSV file.
+    Function to ingest Purchased Goods and Services Emission data via CSV file.
     It ingests all files in the Purchased Goods and Services ingest folder
+
+    :param goods_services_path: File path containing purchased goods and services emission files
     """
     for file in _data_ingest(goods_services_path):
         for goods_and_services in file:
@@ -184,12 +193,15 @@ def _good_and_services_data_ingest(goods_services_path: str) -> None:
                 logger.error(f"Ingest data validation failed. Data: {goods_and_services}, " +
                              f"Reason: {goods_and_services_serializer.errors}")
                 continue
+    logger.debug("Purchased goods and services file ingest complete")
 
 
 def _electricity_data_ingest(electricity_path: str) -> None:
     """
-    Function to imgest Electricity emission data via CSV file.
+    Function to ingest Electricity emission data via CSV file.
     It ingests all files in the Electricity ingest folder
+
+    :param electricity_path: File path containing electricity emission files
     """
     # Find all file paths in ingest folder with .csv extension
     for file in _data_ingest(electricity_path):
@@ -217,7 +229,7 @@ def _electricity_data_ingest(electricity_path: str) -> None:
                 continue
 
             # Create model object using ingested data
-            electricity_serializer = serializers.ElectrictySerializer(
+            electricity_serializer = serializers.ElectricitySerializer(
                 data={
                     "activity": electricity["Activity"].lower(),
                     "date": date,
@@ -238,6 +250,7 @@ def _electricity_data_ingest(electricity_path: str) -> None:
                 logger.error(f"Ingest data validation failed. Data: {electricity}, " +
                              f"Reason: {electricity_serializer.errors}")
                 continue
+    logger.debug("Electricity file ingest complete")
 
 
 def run(

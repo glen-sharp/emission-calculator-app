@@ -20,7 +20,7 @@ class PurchasedGoodsAndServicesSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ElectrictySerializer(serializers.ModelSerializer):
+class ElectricitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Electricty
+        model = models.Electricity
         fields = "__all__"

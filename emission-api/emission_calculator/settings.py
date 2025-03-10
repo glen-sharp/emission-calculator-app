@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import sys
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,10 +80,14 @@ WSGI_APPLICATION = "emission_calculator.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+# If test is being executed, set database path as test folder
+directory = BASE_DIR / "/emission_calculator_backend/tests" if "test" in sys.argv else BASE_DIR
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": directory / "db.sqlite3",
     },
 }
 

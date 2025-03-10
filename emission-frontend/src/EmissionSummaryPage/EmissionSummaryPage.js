@@ -26,9 +26,7 @@ export default function EmissionsPage() {
         setTotalEmissions(data.emissions.total_co2e.toFixed(3))
 
         setTotalAirEmissions(data.emissions.total_air_travel_co2e.toFixed(3))
-
         setTotalGoodsAndServicesEmissions(data.emissions.total_purchased_goods_and_services_co2e.toFixed(3))
-
         setTotalElectricityEmissions(data.emissions.total_electricity_co2e.toFixed(3))
     }
     useEffect(() => {

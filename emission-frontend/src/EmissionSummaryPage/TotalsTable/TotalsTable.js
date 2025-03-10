@@ -17,38 +17,38 @@ export default function TotalsTable({
     totalElectricityEmissions
 }) {
     const columns = [
-        {"id": "activity", "name": "Activity"},
-        {"id": "total", "name": "Total CO2e"},
+        {"id": "activity", "name": "Activity", "width": "30%", "align": "left"},
+        {"id": "total", "name": "Total CO2e", "width": "10%", "align": "right"},
     ];
+
+    const data = [
+        {"activity": "Air Travel", "emission": totalAirEmissions},
+        {"activity": "Purchased Goods and Services", "emission": totalGoodsAndServicesEmissions},
+        {"activity": "Electricity", "emission": totalElectricityEmissions},
+    ]
 
     return (
         <div className="totals-table-wrapper">
-            <Paper sx={{width: '30rem'}}>
+            <Paper sx={{width: '25rem'}}>
                 <TableContainer component={Paper}>
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
-                                {columns.map((column)=>(
-                                    <TableCell key={column.id}>{column.name}</TableCell>
+                                {columns.map((val) => (
+                                    <TableCell style={{ width: val.width }} key={val.id} align={val.align}>{val.name}</TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow>
-                                <TableCell style={{ width: '40%' }} align="left">Air Travel</TableCell>
-                                <TableCell style={{ width: '20%' }}>{totalAirEmissions}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Purchased Goods and Services</TableCell>
-                                <TableCell>{totalGoodsAndServicesEmissions}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Electricity</TableCell>
-                                <TableCell>{totalElectricityEmissions}</TableCell>
-                            </TableRow>
+                            {data.map((val) => (
+                                <TableRow>
+                                    <TableCell align="left">{val.activity}</TableCell>
+                                    <TableCell align="right">{val.emission}</TableCell>
+                                </TableRow>
+                            ))}
                             <TableRow>
                                 <TableCell></TableCell>
-                                <TableCell style={{ fontWeight: 600 }}>{totalEmissions}</TableCell>
+                                <TableCell style={{ fontWeight: 600 }} align="right">{totalEmissions}</TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>

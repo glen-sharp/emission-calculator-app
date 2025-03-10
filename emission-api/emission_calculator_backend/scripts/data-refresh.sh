@@ -2,6 +2,7 @@
 
 rm db.sqlite3
 echo SQLite DB deleted
+echo
 
 python manage.py makemigrations
 python manage.py migrate

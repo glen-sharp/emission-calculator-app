@@ -17,31 +17,31 @@ export default function TotalsTable({
     totalElectricityEmissions
 }) {
     const columns = [
-        {"id": "activity", "name": "Activity", "width": "30%", "align": "left"},
-        {"id": "total", "name": "Total CO2e", "width": "10%", "align": "right"},
+        {"id": "activity", "name": "Activity", "width": "40%", "align": "left"},
+        {"id": "total", "name": "Total CO2e", "width": "40%", "align": "right"},
     ];
 
     const data = [
-        {"activity": "Air Travel", "emission": totalAirEmissions},
-        {"activity": "Purchased Goods and Services", "emission": totalGoodsAndServicesEmissions},
-        {"activity": "Electricity", "emission": totalElectricityEmissions},
+        {"id": "air_travel", "activity": "Air Travel", "emission": totalAirEmissions},
+        {"id": "good_and_services", "activity": "Purchased Goods and Services", "emission": totalGoodsAndServicesEmissions},
+        {"id": "electricity", "activity": "Electricity", "emission": totalElectricityEmissions},
     ]
 
     return (
         <div className="totals-table-wrapper">
-            <Paper sx={{width: '25rem'}}>
+            <Paper sx={{width: '20rem'}}>
                 <TableContainer component={Paper}>
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
                                 {columns.map((val) => (
-                                    <TableCell style={{ width: val.width }} key={val.id} align={val.align}>{val.name}</TableCell>
+                                    <TableCell style={{ width: val.width, fontWeight: 600 }} key={val.id} align={val.align}>{val.name}</TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {data.map((val) => (
-                                <TableRow>
+                                <TableRow key={val.id}>
                                     <TableCell align="left">{val.activity}</TableCell>
                                     <TableCell align="right">{val.emission}</TableCell>
                                 </TableRow>

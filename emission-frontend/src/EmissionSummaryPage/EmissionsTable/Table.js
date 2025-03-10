@@ -15,17 +15,23 @@ export default function EmissionsTable({
 }) {
 
     const columns = [
-        { "field": "activity", "headerName": "Activity", width: 250 },
-        { "field": "scope", "headerName": "Scope" },
-        { "field": "category", "headerName": "Category" },
-        { "field": "co2e", "headerName": "CO2e", type: "number", width: 150 },
+        { "field": "activity", "headerName": "Activity", width: 300, resizable: false },
+        { "field": "scope", "headerName": "Scope", resizable: false },
+        { "field": "category", "headerName": "Category", resizable: false },
+        { "field": "co2e", "headerName": "CO2e", type: "number", width: 150, resizable: false },
     ];
+
+    function capitalizeWords(string) {
+      return string.split(' ').map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ')
+    }
 
     // Add ID field to object to allows DataGrid to visualise
     // and format data attributes
     const emissionsWithIndex = emissions.map((obj, id) => ({
         "id": id,
-        "activity": obj.activity,
+        "activity": capitalizeWords(obj.activity),
         "scope": obj.scope,
         "category": obj.category ? obj.category : "-",
         "co2e": obj.co2e.toFixed(3),

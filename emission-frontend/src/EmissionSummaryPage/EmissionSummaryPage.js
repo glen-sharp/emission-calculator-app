@@ -5,6 +5,7 @@ import { GetEmissions } from "../utils/serverRequests";
 import TotalsTable from "./TotalsTable/TotalsTable";
 import EmissionsTable from "./EmissionsTable/Table";
 import "./EmissionSummaryPage.css";
+import logo from "../utils/images/minimum_logo.svg"
 
 export default function EmissionsPage() {
 
@@ -35,14 +36,17 @@ export default function EmissionsPage() {
 
     return (
         <div className="emissions-page-wrapper">
+            <div className="totals-logo-wrapper">
+                <img className="minimum-logo" src={logo} alt="Minimum logo"/>
+                <TotalsTable
+                    totalEmissions={totalEmissions}
+                    totalAirEmissions={totalAirEmissions}
+                    totalGoodsAndServicesEmissions={totalGoodsAndServicesEmissions}
+                    totalElectricityEmissions={totalElectricityEmissions}
+                />
+            </div>
             <EmissionsTable
                 emissions={emissions}
-            />
-            <TotalsTable
-                totalEmissions={totalEmissions}
-                totalAirEmissions={totalAirEmissions}
-                totalGoodsAndServicesEmissions={totalGoodsAndServicesEmissions}
-                totalElectricityEmissions={totalElectricityEmissions}
             />
         </div>
     );

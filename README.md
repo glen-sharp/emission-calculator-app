@@ -28,4 +28,14 @@ To run the application locally, the following steps need to be followed.
 1. Navigate to frontend directory
 2. Download Node.js and run required npm terminal commands or build and run docker image
 
-### 
+### Running All Components via Docker
+
+Script to populate DB, build container images and running containers for API and Frontend:
+```bash
+bash scripts/container-run.sh
+```
+
+Script to stop container and remove image from local machine:
+```bash
+bash scripts/container-stop.sh
+```

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-podman stop emission-frontend && podman rm emission-frontend
+docker stop emission-frontend && docker rm emission-frontend
 
-podman stop emission-api && podman rm emission-api
+docker stop emission-api && docker rm emission-api

@@ -6,6 +6,11 @@ WORKDIR /app
 COPY . /app
 # Install the required packages
 RUN pip3 install --no-cache-dir -r requirements.txt
+
+RUN python manage.py makemigrations
+RUN python manage.py migrate
+RUN python manage.py runscript import_data
+
 # Expose port 10 for the development server to listen on
 EXPOSE 10
 # Run the development server

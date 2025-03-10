@@ -44,6 +44,7 @@ Response payload:
         "total_co2e": <float type>
     }
 }
+```
 
 ## Formatting
 
@@ -152,15 +153,4 @@ python manage.py test emission_calculator_backend/tests --verbosity=2
     - Also results in extra table to be queried, potentially resulting API being less performant
 2. Split database into "raw" and "conform" instances to allow raw data to be queries alongside transformed data
 3. Use environment variables for variables in `config.py` file
-
-
-TODO:
-- Allow admin to add or remove data
-- Unit tests
-- logging
-- Start up instructions, potentially containers?
-- Create data model image for tables
-
-
-
 

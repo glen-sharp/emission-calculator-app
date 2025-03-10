@@ -10,10 +10,6 @@ fi
 # Using parameter to allow use of different image build software
 CONTAINER_APP=$1
 
-cd emission-api
-bash emission_calculator_backend/scripts/data-refresh.sh
-cd ..
-
 $CONTAINER_APP build emission-api/. -t emission-api
 echo API container image built
 $CONTAINER_APP build emission-frontend/. -t emission-frontend

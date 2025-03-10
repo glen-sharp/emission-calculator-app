@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
-
+echo Delete SQLite DB file if present
 rm db.sqlite3
-echo SQLite DB deleted
 echo
+
+set -e
 
 python manage.py makemigrations
 python manage.py migrate

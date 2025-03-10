@@ -64,11 +64,11 @@ In the `config.py` file, there are various configurable parameters. These includ
 
 | Variable Name                      | Data Type | Description                                                                  | 
 | ---------------------------------- | --------- | ---------------------------------------------------------------------------- |
-| EMISSION_FACTOR_INGEST_FOLDER      | dict      | Folder path containing Emission Factor data files                            |
-| AIR_TRAVEL_INGEST_FOLDER           | float     | Folder path containing Air Travel Emissions data files                       |
-| GOODS_AND_SERVICES_INGEST_FOLDER   | int       | Folder path containing Purchased Goods and Services Emissions data files     |
-| ELECTRICITY_INGEST_FOLDER          | int       | Folder path containing Electricity Emissions dats files                      |
-| MILES_TO_KM_CONVERSION             | int       | Corefficient to convert Miles -> Kilometers                                  |
+| EMISSION_FACTOR_INGEST_FOLDER      | str       | Folder path containing Emission Factor data files                            |
+| AIR_TRAVEL_INGEST_FOLDER           | str       | Folder path containing Air Travel Emissions data files                       |
+| GOODS_AND_SERVICES_INGEST_FOLDER   | str       | Folder path containing Purchased Goods and Services Emissions data files     |
+| ELECTRICITY_INGEST_FOLDER          | str       | Folder path containing Electricity Emissions dats files                      |
+| MILES_TO_KM_CONVERSION             | float     | Corefficient to convert Miles -> Kilometers                                  |
 | LOG_LEVEL                          | str       | Level for types of logs output to stdout                                     |
 
 

@@ -6,12 +6,11 @@ Documentation for each of the components can be found here:
 - [API Documentation](emission-api/README.md)
 - [Frontend Documentation](emission-frontend/README.md)
 
-## Running Locally
+## Running Locally via Pyhton and Node.js
 
 Requirements:
 - python:3.9+
 - Node.js v22.4.1+
-- Docker (optional)
 
 To run the application locally, the following steps need to be followed.
 
@@ -21,14 +20,17 @@ To run the application locally, the following steps need to be followed.
 2. Create and start virtual environment
 3. Download required libraries
 4. Load data into database
-5. Run server locally via Python or Docker
+5. Run server locally via Python
 
 ### Frontend steps as described here: [Frontend local deployment instructions](emission-frontend/README.md)
 
-1. Navigate to frontend directory
-2. Download Node.js and run required npm terminal commands or build and run docker image
+1. Navigate to Frontend directory
+2. Download Node.js and run required npm terminal commands
 
-### Running All Components via Docker
+## Running Locally via Docker
+
+Requirements:
+- docker daemon
 
 Before using this method, the required data files need to be in the ingest folders specified [here](emission-api/README.md#data-load)
 

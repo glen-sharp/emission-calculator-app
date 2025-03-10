@@ -102,7 +102,7 @@ These libraries should not be treated as production code dependencies, hence the
 pip install -r requirements.txt
 ```
 
-### Executing Utility Locally
+### Data Load
 
 Before running server locally, data must be loaded into the DB in CSV format.
 
@@ -124,6 +124,8 @@ Execution of the following command will run the ETL script.
 ```bash
 bash emission_calculator_backend/scripts/data-refresh.sh
 ```
+
+### Running Server Locally
 
 To run the server locally using python, execute:
 ```bash
@@ -148,6 +150,7 @@ python manage.py test emission_calculator_backend/tests --verbosity=2
     - Means that most up-to-date Scope and Category is used
     - Couldn't get done now as don't know if 'lookup_identifier' is unique so can't just filter on that without using unit field
 2. Have 'Raw' layer storage to query input files
+3. Use environment variables for variables in `config.py` file
 
 
 TODO:

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+cd emission-api
+bash emission_calculator_backend/scripts/data-refresh.sh
+cd ..
+
 podman build emission-api/. -t emission-api
 echo API container image built
 podman build emission-frontend/. -t emission-frontend

@@ -6,6 +6,8 @@ echo
 
 set -e
 
+python manage.py test emission_calculator_backend/tests --verbosity=2
+
 python manage.py makemigrations
 python manage.py migrate
 

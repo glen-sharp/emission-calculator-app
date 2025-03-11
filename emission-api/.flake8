@@ -6,4 +6,6 @@ per-file-ignores =
 
 inline-quotes = double
 
-exclude = venv
+exclude =
+    .venv
+    venv

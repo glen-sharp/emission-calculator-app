@@ -28,16 +28,17 @@ To execute the ETL stage, the following query is run in the `emission-api` direc
 bash emission_calculator_backend/scripts/data-refresh.sh
 ```
 
-Steps: 
-1. Deletes the current SQLite database
-2. Creates a new DB using the DB schema in the `models.py` file
-3. (Through execution of ETL script) Finds all CSV files in the ingest folders
-4. Extracts data from CSV files
-5. Through 'conform' layer objects, apply data validation (if failed, current entry is logged and skipped)
-6. Performs simple data transformations:
+Steps:
+1. Executes unit tests
+2. Deletes the current SQLite database
+3. Creates a new DB using the DB schema in the `models.py` file
+4. (Through execution of ETL script) Finds all CSV files in the ingest folders
+5. Extracts data from CSV files
+6. Through 'Input' layer objects, apply data validation (if failed, current entry is logged and skipped)
+7. Performs simple data transformations:
     - All strings are converted to lower-case
     - Air travel distance unit is converted to kilometres
-7. Loads relevant tables with data
+8. Loads relevant tables with data
 
 ## Running locally
 
@@ -46,9 +47,9 @@ Steps:
 Best way to download the required python packages and run the app locally is to start a virtual environment
 
 ```bash
-pip install virtualenv
-python -m venv <virtual-environment-name>
-source <virtual-environment-name>/bin/activate
+pip3 install virtualenv
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 ### Downloading Required Libraries
@@ -94,6 +95,14 @@ To run the server via a Docker image, execute the following commands after addin
 docker build . -t emission-api
 
 docker run -p 8000:10 emission-api:latest
+```
+
+The server is now available using the following URL: `http://localhost:3000/`
+
+The API can be queried in the terminal with the following cURL command:
+
+```bash
+curl --location 'http://127.0.0.1:8000/emissions'
 ```
 
 ### Unit Test Execution
@@ -148,7 +157,7 @@ In the `config.py` file, there are various configurable parameters. These includ
 | AIR_TRAVEL_INGEST_FOLDER           | str       | Folder path containing Air Travel Emissions data files                       |
 | GOODS_AND_SERVICES_INGEST_FOLDER   | str       | Folder path containing Purchased Goods and Services Emissions data files     |
 | ELECTRICITY_INGEST_FOLDER          | str       | Folder path containing Electricity Emissions dats files                      |
-| MILES_TO_KM_CONVERSION             | float     | Corefficient to convert Miles -> Kilometres                                  |
+| MILES_TO_KM_CONVERSION             | float     | Coefficient to convert Miles -> Kilometres                                  |
 | LOG_LEVEL                          | str       | Level for types of logs output to stdout                                     |
 
 
@@ -169,27 +178,26 @@ In the `config.py` file, there are various configurable parameters. These includ
 
 ## Assumptions
 
-1. In emission factors table, the combination of Activity, Lookup identifier and Unit are a unique combination (composite key)
+1. In emission factors table, the combination of Activity, Lookup identifier and Unit are unique (composite key)
 2. Max character length could be up to 200 characters
 3. `lookup_identifier` is not unique in EmissionFactors table
 4. Null category for electricity emission factors should not be transformed
 5. Air Travel lookup value will always be in format: `<flight range>, <passenger class>`
-6. Whenever new emission factor datadata or activity data is available, the ETL pipeline can be run to refresh DB
+6. Whenever new emission factor data or activity data is available, the ETL pipeline can be run to refresh DB
 7. Data is not manually changed in the DB or via admin role
 8. Emission Factors data is static and will not change
-9. Activity groups can be hard-coded, and therefore if new activities are ingested, this can be coded when available
+9. Activity groups can be hard-coded, and therefore if new activities are ingested, this will be added to the API
 
 
 ## Future Improvements
-1. Potentially add foregn key constraint between tables and query the Scope and Category through that if `lookup_identifier` is unique
+1. Potentially add foregn key constraint between fact and dimension tables, and query the Scope and Category through that if `lookup_identifier` is unique
     - Means that most up-to-date Scope and Category is used
-    - Couldn't get done now as don't know if `lookup_identifier` is unique so can't just filter on that without using unit field
-    - Also results in extra table to be queried, potentially resulting API being less performant
+    - Results in extra table to be queried, potentially making API being less performant
 2. Split database into "raw" and "conform" instances to allow raw data to be queries alongside transformed data
-3. Data validation for input CSV files
+3. Data type validation for input CSV files
 4. Use environment variables for variables in `config.py` file
 5. Run ETL pipeline for non-emission factor files asynchronously using eg Celery
-5. Create CI/CD pipeline that runs unit test, static code analysis and pushes container images to a container registry then deploys
+5. Create CI/CD pipeline that runs unit tests, static code analysis and pushes container images to a container registry then deploys
 5. Deploying to AWS:
     1. Replace import folder with S3 bucket
     2. Allow Athena to query raw CSV files

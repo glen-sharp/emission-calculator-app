@@ -171,8 +171,9 @@ In the `config.py` file, there are various configurable parameters. These includ
     - Couldn't get done now as don't know if `lookup_identifier` is unique so can't just filter on that without using unit field
     - Also results in extra table to be queried, potentially resulting API being less performant
 2. Split database into "raw" and "conform" instances to allow raw data to be queries alongside transformed data
-3. Use environment variables for variables in `config.py` file
-4. Deploying to AWS:
+3. Data validation for input CSV files
+4. Use environment variables for variables in `config.py` file
+5. Deploying to AWS:
     1. Replace import folder with S3 bucket
     2. Allow Athena to query raw CSV files
     3. Convert ETL script into Glue job

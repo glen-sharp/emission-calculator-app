@@ -1,6 +1,9 @@
 [flake8]
 max-line-length = 120
 
+per-file-ignores =
+    emission_calculator_backend/tests/tests.py: Q001
+
 inline-quotes = double
 
 exclude = venv

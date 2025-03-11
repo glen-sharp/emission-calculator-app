@@ -28,8 +28,8 @@ def _data_ingest(ingest_folder_path: str, input_class) -> list:
 
     # Loop through file paths and extract data
     for path in file_paths:
-        logger.debug(f"Ingesting: '{path}'")
-        with open(f"{ingest_folder_path}{path}", newline="", encoding="utf-8") as file:
+        logger.info(f"Ingesting: '{path}'")
+        with open(os.path.join(ingest_folder_path, path), newline="", encoding="utf-8") as file:
             file_content = csv.DictReader(file)
             try:
                 # Create array of objects with content. In future return only
@@ -37,10 +37,9 @@ def _data_ingest(ingest_folder_path: str, input_class) -> list:
                 for row in file_content:
                     try:
                         content.append(input_class(**row))
-                    except ValueError as e:
+                    except ValueError:
                         # If value error returned, this means data validation has failed,
                         # and this row will be skipped
-                        logger.error(f"Value error: {e}")
                         continue
             except KeyError as e:
                 raise KeyError(f"Column validation failed for: '{path}' on column: {e}")
@@ -98,7 +97,7 @@ def _emission_factor_data_ingest(emission_factor_path: str) -> None:
             else:
                 logger.error(f"Ingest data validation failed. Data: {emission_factor_obj}")
                 continue
-    logger.debug("Emission factor file ingest complete")
+    logger.info("Emission factor files ingest complete")
 
 
 def _air_travel_data_ingest(air_travel_path: str) -> None:
@@ -146,7 +145,7 @@ def _air_travel_data_ingest(air_travel_path: str) -> None:
                 logger.error(f"Ingest data validation failed. Data: {air_travel_obj}, " +
                              f"Reason: {air_travel_serializer.errors}")
                 continue
-    logger.debug("Air travel file ingest complete")
+    logger.info("Air travel files ingest complete")
 
 
 def _good_and_services_data_ingest(goods_services_path: str) -> None:
@@ -192,7 +191,7 @@ def _good_and_services_data_ingest(goods_services_path: str) -> None:
                 logger.error(f"Ingest data validation failed. Data: {goods_and_services}, " +
                              f"Reason: {goods_and_services_serializer.errors}")
                 continue
-    logger.debug("Purchased goods and services file ingest complete")
+    logger.info("Purchased goods and services files ingest complete")
 
 
 def _electricity_data_ingest(electricity_path: str) -> None:
@@ -239,7 +238,7 @@ def _electricity_data_ingest(electricity_path: str) -> None:
                 logger.error(f"Ingest data validation failed. Data: {electricity}, " +
                              f"Reason: {electricity_serializer.errors}")
                 continue
-    logger.debug("Electricity file ingest complete")
+    logger.info("Electricity files ingest complete")
 
 
 def run(

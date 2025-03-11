@@ -1,0 +1,8 @@
+Activity,Lookup_Identifiers,Unit,CO2e,Scope,Category
+Air Travel,"Long-haul, Business class",kilometres,0.050,3,6
+Air Travel,"International, Premium Economy class",kilometres,0.020,3,6
+Purchased Goods and Services,"Manufacture of computer, electronic and optical products",GBP,0.600,3,1
+Purchased Goods and Services,Manufacture of electrical equipment,GBP,0.800,3,1
+Purchased Goods and Services,Real estate activities,GBP,0.100,3,1
+Electricity,Germany,kWh,0.300,2,
+Electricity,United Kingdom,kWh,0.200,2,

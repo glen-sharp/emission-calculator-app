@@ -7,6 +7,7 @@ COPY . /app
 # Install the required packages
 RUN pip3 install --no-cache-dir -r requirements.txt
 
+# Run DB creation and load scripts
 RUN python manage.py makemigrations
 RUN python manage.py migrate
 RUN python manage.py runscript import_data

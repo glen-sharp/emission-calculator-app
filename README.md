@@ -37,20 +37,10 @@ Before using this method, the required data files need to be in the ingest folde
 Script to populate DB, build container images and running containers for API and Frontend:
 MacOS:
 ```bash
-bash scripts/container-run.sh
+docker-compose up -d
 ```
 
 Script to stop containers and remove images from local machine:
 ```bash
-bash scripts/container-stop.sh
-```
-
-Windows:
-```bash
-sh scripts/container-run.sh
-```
-
-Script to stop containers and remove images from local machine:
-```bash
-sh scripts/container-stop.sh
+docker-compose stop
 ```

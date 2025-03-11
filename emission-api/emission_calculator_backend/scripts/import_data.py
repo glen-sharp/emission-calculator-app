@@ -1,5 +1,4 @@
 import csv
-from datetime import datetime
 import os
 import logging
 
@@ -10,7 +9,7 @@ import config
 logger = logging.getLogger("root")
 
 
-def _data_ingest(ingest_folder_path: str) -> list:
+def _data_ingest(ingest_folder_path: str, input_class) -> list:
     """
     Reusable component to find CSV file paths in a directory and return the content
 
@@ -25,17 +24,52 @@ def _data_ingest(ingest_folder_path: str) -> list:
     ]
 
     file_content_array = []
+    content = []
 
     # Loop through file paths and extract data
     for path in file_paths:
         logger.debug(f"Ingesting: '{path}'")
         with open(f"{ingest_folder_path}{path}", newline="", encoding="utf-8") as file:
             file_content = csv.DictReader(file)
-            # Create array with content. In future reuturn only file without creating array (better scalability)
-            content = [row for row in file_content]
+            try:
+                # Create array of objects with content. In future return only
+                # file without creating array (better scalability)
+                for row in file_content:
+                    try:
+                        content.append(input_class(**row))
+                    except ValueError as e:
+                        # If value error returned, this means data validation has failed,
+                        # and this row will be skipped
+                        logger.error(f"Value error: {e}")
+                        continue
+            except KeyError as e:
+                raise KeyError(f"Column validation failed for: '{path}' on column: {e}")
         file_content_array.append(content)
 
     return file_content_array
+
+
+def _fetch_emission_factor_object(
+    activity: str,
+    lookup_identifier: str,
+    unit: str,
+) -> models.EmissionFactors:
+    """
+    Function to return emission factor object
+
+    :param activity: Activity name
+    :param lookup_identifier: Identifier for specific activity
+    :param unit: Unit of measure for activity
+
+    :return: Emission Factor object
+    """
+    emission_factor_obj = models.EmissionFactors.objects.filter(
+        activity=activity,
+        lookup_identifier=lookup_identifier,
+        unit=unit,
+    ).first()  # first() method can be used due to unique_together property in model
+
+    return emission_factor_obj
 
 
 def _emission_factor_data_ingest(emission_factor_path: str) -> None:
@@ -45,24 +79,24 @@ def _emission_factor_data_ingest(emission_factor_path: str) -> None:
 
     :param emission_factor_path: File path containing emission factor files
     """
-    for file in _data_ingest(emission_factor_path):
-        for emission_factor in file:
+    for file in _data_ingest(emission_factor_path, models.InputEmissionFactors):
+        for emission_factor_obj in file:
             # Create model object using ingested data
             emission_factor_serializer = serializers.EmissionFactorsSerializer(
                 data={
-                    "activity": emission_factor["Activity"].lower(),
-                    "lookup_identifier": emission_factor["Lookup identifiers"].lower(),
-                    "unit": emission_factor["Unit"].lower(),
-                    "co2e": emission_factor["CO2e"],
-                    "scope": emission_factor["Scope"],
-                    "category": emission_factor["Category"] if emission_factor["Category"] else None,
+                    "activity": emission_factor_obj.activity,
+                    "lookup_identifier": emission_factor_obj.lookup_identifier,
+                    "unit": emission_factor_obj.unit,
+                    "co2e": emission_factor_obj.co2e,
+                    "scope": emission_factor_obj.scope,
+                    "category": emission_factor_obj.category,
                 },
             )
             # Execute mandatory input object validator method
             if emission_factor_serializer.is_valid():
                 emission_factor_serializer.save()
             else:
-                logger.error(f"Ingest data validation failed. Data: {emission_factor}")
+                logger.error(f"Ingest data validation failed. Data: {emission_factor_obj}")
                 continue
     logger.debug("Emission factor file ingest complete")
 
@@ -74,59 +108,34 @@ def _air_travel_data_ingest(air_travel_path: str) -> None:
 
     :param air_travel_path: File path containing air travel emission files
     """
-    for file in _data_ingest(air_travel_path):
-        for air_travel in file:
+    for file in _data_ingest(air_travel_path, models.InputAirTravel):
+        for air_travel_obj in file:
             # Fetch emission factor from mapping table
-            emission_factor_obj = models.EmissionFactors.objects.filter(
-                activity=air_travel["Activity"].lower(),
-                lookup_identifier__contains=air_travel["Passenger class"].lower(),
+            emission_factor_obj = _fetch_emission_factor_object(
+                activity=air_travel_obj.activity,
+                lookup_identifier=air_travel_obj.booking_type,
                 unit="kilometres",
-            ).filter(
-                lookup_identifier__contains=air_travel["Flight range"],
-            ).values(
-                "co2e",
-                "scope",
-                "category",
             )
 
-            # Validate only one emission factor entry has been returned for activity
-            if len(emission_factor_obj) != 1:
-                logger.error(f"Emission factor not found for: {air_travel}")
+            # Validate one emission factor entry has been returned for activity
+            if not emission_factor_obj:
+                logger.error(f"Emission factor not found for: {air_travel_obj}")
                 continue
-
-            # Checks if distance unit is miles, if yes, unit is standardised
-            if air_travel["Distance units"] == "miles":
-                # Convert distance to kilometers
-                distance_km = float(air_travel["Distance travelled"]) * config.MILES_TO_KM_CONVERSION
-            elif air_travel["Distance units"] == "kilometers":
-                distance_km = float(air_travel["Distance travelled"])
-            else:
-                unit = air_travel["Distance units"]
-                logger.error(f"No standard distance unit used. Unit: {unit}")
-                continue
-
-            try:
-                date = datetime.strptime(air_travel["Date"], "%d/%m/%Y").date()
-            except ValueError:
-                logger.error(f"Incorrect datetime format. Data: {air_travel}")
-                continue
-
-            booking_type = air_travel["Flight range"] + ", " + air_travel["Passenger class"]
 
             # Create model object using ingested data
             air_travel_serializer = serializers.AirTravelSerializer(
                 data={
-                    "date": date,
-                    "activity": air_travel["Activity"].lower(),
-                    "distance_travelled": distance_km,
+                    "date": air_travel_obj.date,
+                    "activity": air_travel_obj.activity,
+                    "distance_travelled": air_travel_obj.distance_travelled,
                     "distance_unit": "kilometres",
-                    "flight_range": air_travel["Flight range"].lower(),
-                    "passenger_class": air_travel["Passenger class"].lower(),
-                    "booking_type": booking_type.lower(),
+                    "flight_range": air_travel_obj.flight_range,
+                    "passenger_class": air_travel_obj.passenger_class,
+                    "booking_type": air_travel_obj.booking_type,
                     # Converting spend to float to allow multiplication with emission factor
-                    "co2e": emission_factor_obj[0]["co2e"] * float(distance_km),
-                    "scope": emission_factor_obj[0]["scope"],
-                    "category": emission_factor_obj[0]["category"],
+                    "co2e": emission_factor_obj.co2e * air_travel_obj.distance_travelled,
+                    "scope": emission_factor_obj.scope,
+                    "category": emission_factor_obj.category,
                 },
             )
 
@@ -134,7 +143,7 @@ def _air_travel_data_ingest(air_travel_path: str) -> None:
             if air_travel_serializer.is_valid():
                 air_travel_serializer.save()
             else:
-                logger.error(f"Ingest data validation failed. Data: {air_travel}, " +
+                logger.error(f"Ingest data validation failed. Data: {air_travel_obj}, " +
                              f"Reason: {air_travel_serializer.errors}")
                 continue
     logger.debug("Air travel file ingest complete")
@@ -147,42 +156,32 @@ def _good_and_services_data_ingest(goods_services_path: str) -> None:
 
     :param goods_services_path: File path containing purchased goods and services emission files
     """
-    for file in _data_ingest(goods_services_path):
+    for file in _data_ingest(goods_services_path, models.InputPurchasedGoodsAndServices):
         for goods_and_services in file:
             # Fetch emission factor from mapping table
-            emission_factor_obj = models.EmissionFactors.objects.filter(
-                activity=goods_and_services["Activity"].lower(),
-                lookup_identifier=goods_and_services["Supplier category"].lower(),
-                unit=goods_and_services["Spend units"].lower(),
-            ).values(
-                "co2e",
-                "scope",
-                "category",
+            emission_factor_obj = _fetch_emission_factor_object(
+                activity=goods_and_services.activity,
+                lookup_identifier=goods_and_services.supplier_category,
+                unit=goods_and_services.spend_unit,
             )
 
             # Validate only one emission factor entry has been returned for activity
-            if len(emission_factor_obj) != 1:
+            if not emission_factor_obj:
                 logger.error(f"Emission factor not found for: {goods_and_services}")
-                continue
-
-            try:
-                date = datetime.strptime(goods_and_services["Date"], "%d/%m/%Y").date()
-            except ValueError:
-                logger.error(f"Incorrect datetime format. Data: {goods_and_services}")
                 continue
 
             # Create model object using ingested data
             goods_and_services_serializer = serializers.PurchasedGoodsAndServicesSerializer(
                 data={
-                    "date": date,
-                    "activity": goods_and_services["Activity"].lower(),
-                    "supplier_category": goods_and_services["Supplier category"].lower(),
-                    "spend": goods_and_services["Spend"],
-                    "spend_unit": goods_and_services["Spend units"].lower(),
+                    "date": goods_and_services.date,
+                    "activity": goods_and_services.activity,
+                    "supplier_category": goods_and_services.supplier_category,
+                    "spend": goods_and_services.spend,
+                    "spend_unit": goods_and_services.spend_unit,
                     # Converting spend to float to allow multiplication with emission factor
-                    "co2e": emission_factor_obj[0]["co2e"] * float(goods_and_services["Spend"]),
-                    "scope": emission_factor_obj[0]["scope"],
-                    "category": emission_factor_obj[0]["category"],
+                    "co2e": emission_factor_obj.co2e * goods_and_services.spend,
+                    "scope": emission_factor_obj.scope,
+                    "category": emission_factor_obj.category,
                 },
             )
 
@@ -204,42 +203,32 @@ def _electricity_data_ingest(electricity_path: str) -> None:
     :param electricity_path: File path containing electricity emission files
     """
     # Find all file paths in ingest folder with .csv extension
-    for file in _data_ingest(electricity_path):
+    for file in _data_ingest(electricity_path, models.InputElectricity):
         for electricity in file:
             # Fetch emission factor from mapping table
-            emission_factor_obj = models.EmissionFactors.objects.filter(
-                activity=electricity["Activity"].lower(),
-                lookup_identifier=electricity["Country"].lower(),
-                unit=electricity["Units"].lower(),
-            ).values(
-                "co2e",
-                "scope",
-                "category",
+            emission_factor_obj = _fetch_emission_factor_object(
+                activity=electricity.activity,
+                lookup_identifier=electricity.country,
+                unit=electricity.unit,
             )
 
-            # Validate only one emission factor entry has been returned for activity
-            if len(emission_factor_obj) != 1:
+            # Validate an emission factor entry has been returned for activity
+            if not emission_factor_obj:
                 logger.error(f"Emission factor not found for: {electricity}")
-                continue
-
-            try:
-                date = datetime.strptime(electricity["Date"], "%d/%m/%Y").date()
-            except ValueError:
-                logger.error(f"Incorrect datetime format. Data: {electricity}")
                 continue
 
             # Create model object using ingested data
             electricity_serializer = serializers.ElectricitySerializer(
                 data={
-                    "activity": electricity["Activity"].lower(),
-                    "date": date,
-                    "country": electricity["Country"].lower(),
-                    "electricity_usage": electricity["Electricity Usage"],
-                    "unit": electricity["Units"].lower(),
+                    "activity": electricity.activity,
+                    "date": electricity.date,
+                    "country": electricity.country,
+                    "electricity_usage": electricity.electricity_usage,
+                    "unit": electricity.unit,
                     # Converting spend to float to allow multiplication with emission factor
-                    "co2e": emission_factor_obj[0]["co2e"] * float(electricity["Electricity Usage"]),
-                    "scope": emission_factor_obj[0]["scope"],
-                    "category": emission_factor_obj[0]["category"],
+                    "co2e": emission_factor_obj.co2e * float(electricity.electricity_usage),
+                    "scope": emission_factor_obj.scope,
+                    "category": emission_factor_obj.category,
                 },
             )
 
@@ -278,4 +267,3 @@ def run(
         _electricity_data_ingest(electricity_path)
     except Exception as e:
         logger.error(f"Error occurred during data ingestion, see: {e}")
-        raise Exception from e

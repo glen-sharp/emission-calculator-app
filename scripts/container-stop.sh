@@ -2,13 +2,6 @@
 
 set -e
 
-if [ $# -eq 0 ]; then
-  echo "Error: No parameter provided"
-  exit 1
-fi
+docker stop emission-frontend && docker rm emission-frontend
 
-CONTAINER_APP=$1
-
-$CONTAINER_APP stop emission-frontend && $CONTAINER_APP rm emission-frontend
-
-$CONTAINER_APP stop emission-api && $CONTAINER_APP rm emission-api
+docker stop emission-api && docker rm emission-api

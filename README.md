@@ -32,14 +32,25 @@ To run the application locally, the following steps need to be followed.
 Requirements:
 - docker daemon
 
-Before using this method, the required data files need to be in the ingest folders specified [here](emission-api/README.md#data-load)
+Before using this method, the required data files need to be in the ingest folders specified [here](emission-api/README.md#data-load), and the user needs to be logged into docker.
 
 Script to populate DB, build container images and running containers for API and Frontend:
+MacOS:
 ```bash
-bash scripts/container-run.sh docker
+bash scripts/container-run.sh
 ```
 
 Script to stop containers and remove images from local machine:
 ```bash
-bash scripts/container-stop.sh docker
+bash scripts/container-stop.sh
+```
+
+Windows:
+```bash
+sh scripts/container-run.sh
+```
+
+Script to stop containers and remove images from local machine:
+```bash
+sh scripts/container-stop.sh
 ```

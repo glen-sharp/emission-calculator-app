@@ -7,9 +7,23 @@ The API currently handles Emissions data for:
 - Purchased Goods and Services
 - Electricity
 
+## Contents
+- [ETL Script](#etl-script)
+- [Running locally](#running-locally)
+    - [Creating and Starting a Virtual Environment](#creating-and-starting-a-virtual-environment)
+    - [Downloading Required Libraries](#downloading-required-libraries)
+    - [Data Load](#data-load)
+    - [Running Server Locally](#running-server-locally)
+    - [Unit Test Execution](#unit-test-execution)
+    - [Formatting](#formatting)
+- [GET /emissions/](#get-emissions)
+- [Configurable Variables](#configurable-variables)
+- [Assumptions](#assumptions)
+- [Future Improvements](#future-improvements)
+
 ## ETL Script
 
-To execute the ETL stage, the following query is run:
+To execute the ETL stage, the following query is run in the `emission-api` directory:
 ```bash
 bash emission_calculator_backend/scripts/data-refresh.sh
 ```
@@ -25,68 +39,7 @@ Steps:
     - Air travel distance unit is converted to kilometers
 7. Loads relevant tables with data
 
-## GET /emissions/
-
-Response payload:
-
-```json
-{
-    "emissions": {
-        "emissions_array": [
-            {
-                "co2e": "<float type>",
-                "scope": "<int type>",
-                "category": "<int type>",
-                "activity": "<string type>"
-            }
-        ],
-        "total_air_travel_co2e": "<float type>",
-        "total_purchased_goods_and_services_co2e": "<float type>",
-        "total_electricity_co2e": "<float type>",
-        "total_co2e": "<float type>"
-    }
-}
-```
-
-## Formatting
-
-Throughout development of this code, the PEP8 style guide was followed.
-The following style decisions were used:
-1. Max line length: 100
-2. Quote type: double
-
-Static code analysis can be run through:
-```bash
-flake8
-```
-
-## Configurable Variables
-
-In the `config.py` file, there are various configurable parameters. These include:
-
-| Variable Name                      | Data Type | Description                                                                  | 
-| ---------------------------------- | --------- | ---------------------------------------------------------------------------- |
-| EMISSION_FACTOR_INGEST_FOLDER      | str       | Folder path containing Emission Factor data files                            |
-| AIR_TRAVEL_INGEST_FOLDER           | str       | Folder path containing Air Travel Emissions data files                       |
-| GOODS_AND_SERVICES_INGEST_FOLDER   | str       | Folder path containing Purchased Goods and Services Emissions data files     |
-| ELECTRICITY_INGEST_FOLDER          | str       | Folder path containing Electricity Emissions dats files                      |
-| MILES_TO_KM_CONVERSION             | float     | Corefficient to convert Miles -> Kilometers                                  |
-| LOG_LEVEL                          | str       | Level for types of logs output to stdout                                     |
-
-
-## Assumptions
-
-1. In emission factors table, the combination of Activity, Lookup identifier and Unit are a unique combination (composite key)
-2. Max character length could be up to 200 characters
-3. 'lookup_identifier' is not unique in EmissionFactors table
-4. Null category for electricity emission factors should not be transformed
-5. Air Travel lookup value will always be in format: `<flight range>, <passenger class>`
-6. Whenever new emission factor datadata or activity data is available, the ETL pipeline can be run to refresh DB
-7. Data is not manually changed in the DB or via admin role
-8. Emission Factors data is static and will not change
-9. Activity groups can be hard-coded, and therefore if new activities are ingested, this can be coded when available
-
-## Executing locally
+## Running locally
 
 ### Creating and Starting a Virtual Environment
 
@@ -136,7 +89,7 @@ To run the server locally using python, execute:
 python manage.py runserver
 ```
 
-To run the server via a Docker image, execute the following commands:
+To run the server via a Docker image, execute the following commands after adding the relevant files to the ingest folders:
 ```bash
 docker build . -t emission-api
 
@@ -148,6 +101,69 @@ Execute following in terminal:
 ```bash
 python manage.py test emission_calculator_backend/tests --verbosity=2
 ```
+
+### Formatting
+
+Throughout development of this code, the PEP8 style guide was followed.
+The following style decisions were used:
+1. Max line length: 120
+2. Quote type: double
+
+Static code analysis can be run through:
+```bash
+flake8
+```
+
+## GET /emissions/
+
+Response payload:
+
+```json
+{
+    "emissions": {
+        "emissions_array": [
+            {
+                "co2e": "<float type>",
+                "scope": "<int type>",
+                "category": "<int type>",
+                "activity": "<string type>"
+            }
+        ],
+        "total_air_travel_co2e": "<float type>",
+        "total_purchased_goods_and_services_co2e": "<float type>",
+        "total_electricity_co2e": "<float type>",
+        "total_co2e": "<float type>"
+    }
+}
+```
+
+
+## Configurable Variables
+
+In the `config.py` file, there are various configurable parameters. These include:
+
+| Variable Name                      | Data Type | Description                                                                  | 
+| ---------------------------------- | --------- | ---------------------------------------------------------------------------- |
+| EMISSION_FACTOR_INGEST_FOLDER      | str       | Folder path containing Emission Factor data files                            |
+| AIR_TRAVEL_INGEST_FOLDER           | str       | Folder path containing Air Travel Emissions data files                       |
+| GOODS_AND_SERVICES_INGEST_FOLDER   | str       | Folder path containing Purchased Goods and Services Emissions data files     |
+| ELECTRICITY_INGEST_FOLDER          | str       | Folder path containing Electricity Emissions dats files                      |
+| MILES_TO_KM_CONVERSION             | float     | Corefficient to convert Miles -> Kilometers                                  |
+| LOG_LEVEL                          | str       | Level for types of logs output to stdout                                     |
+
+
+## Assumptions
+
+1. In emission factors table, the combination of Activity, Lookup identifier and Unit are a unique combination (composite key)
+2. Max character length could be up to 200 characters
+3. `lookup_identifier` is not unique in EmissionFactors table
+4. Null category for electricity emission factors should not be transformed
+5. Air Travel lookup value will always be in format: `<flight range>, <passenger class>`
+6. Whenever new emission factor datadata or activity data is available, the ETL pipeline can be run to refresh DB
+7. Data is not manually changed in the DB or via admin role
+8. Emission Factors data is static and will not change
+9. Activity groups can be hard-coded, and therefore if new activities are ingested, this can be coded when available
+
 
 ## Future Improvements
 1. Potentially add foregn key constraint between tables and query the Scope and Category through that if `lookup_identifier` is unique

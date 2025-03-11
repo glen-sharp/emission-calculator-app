@@ -18,10 +18,14 @@ def _data_ingest(ingest_folder_path: str, input_class) -> list:
     :return: Array with objects containing CSV data
     """
     # Find all file paths in ingest folder with .csv extension
-    file_paths = [
-        file_path for file_path in os.listdir(ingest_folder_path)
-        if os.path.splitext(file_path)[1] == ".csv"
-    ]
+    try:
+        file_paths = [
+            file_path for file_path in os.listdir(ingest_folder_path)
+            if os.path.splitext(file_path)[1] == ".csv"
+        ]
+    except FileNotFoundError as e:
+        logger.error(f"No directory found. See {e}")
+        return []
 
     file_content_array = []
     content = []

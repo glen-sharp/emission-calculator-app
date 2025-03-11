@@ -39,6 +39,9 @@ Script to populate DB, build container images and run containers for API and Fro
 docker-compose up -d
 ```
 
+Frontend can be accessed via `http://localhost:3000/`
+API can be accessed via `http://localhost:8000/`
+
 Stop containers:
 ```bash
 docker-compose stop

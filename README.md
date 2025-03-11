@@ -34,13 +34,17 @@ Requirements:
 
 Before using this method, the required data files need to be in the ingest folders specified [here](emission-api/README.md#data-load), and the user needs to be logged into docker.
 
-Script to populate DB, build container images and running containers for API and Frontend:
-MacOS:
+Script to populate DB, build container images and run containers for API and Frontend:
 ```bash
 docker-compose up -d
 ```
 
-Script to stop containers and remove images from local machine:
+Stop containers:
 ```bash
 docker-compose stop
+```
+
+Remove containers:
+```bash
+docker-compose rm
 ```

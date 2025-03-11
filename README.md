@@ -39,7 +39,7 @@ Script to populate DB, build container images and running containers for API and
 bash scripts/container-run.sh docker
 ```
 
-Script to stop container and remove image from local machine:
+Script to stop containers and remove images from local machine:
 ```bash
 bash scripts/container-stop.sh docker
 ```

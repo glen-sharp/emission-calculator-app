@@ -20,10 +20,12 @@ Steps:
 3. (Through execution of ETL script) Finds all CSV files in the ingest folders
 4. Extracts data from CSV files
 5. Data validation (if failed, current entry is logged and skipped)
-6. Performs simple data transformations (eg. lowering case of text, converting units)
+6. Performs simple data transformations:
+    - All strings are converted to lower-case
+    - Air travel distance unit is converted to kilometers
 7. Loads relevant tables with data
 
-## GET /emissions
+## GET /emissions/
 
 Response payload:
 
@@ -32,16 +34,16 @@ Response payload:
     "emissions": {
         "emissions_array": [
             {
-                "co2e": <float type>,
-                "scope": <int type>,
-                "category": <int type>,
-                "activity": <string type>
+                "co2e": "<float type>",
+                "scope": "<int type>",
+                "category": "<int type>",
+                "activity": "<string type>"
             }
         ],
-        "total_air_travel_co2e": <float type>,
-        "total_purchased_goods_and_services_co2e": <float type>,
-        "total_electricity_co2e": <float type>,
-        "total_co2e": <float type>
+        "total_air_travel_co2e": "<float type>",
+        "total_purchased_goods_and_services_co2e": "<float type>",
+        "total_electricity_co2e": "<float type>",
+        "total_co2e": "<float type>"
     }
 }
 ```
@@ -74,14 +76,15 @@ In the `config.py` file, there are various configurable parameters. These includ
 
 ## Assumptions
 
-1. Electricity useage can be rounded to 5 dp
-2. In emission factor table, combination of Activity, Lookup identifier and Unit are a unique combination (composite key)
-3. Max character length could be up to 200 characters
-4. 'lookup_identifier' is not unique in EmissionFactors table
-5. Null category for electricity emission factors should not be transformed
-6. Air Travel lookup value will always be in format: "<flight range>, <passenger class>"
-7. Whenever new emission factor datadata or activity data is available, the ETL pipeline can be run to refresh DB
-8. Data is not manually changed in the DB or via admin role
+1. In emission factors table, the combination of Activity, Lookup identifier and Unit are a unique combination (composite key)
+2. Max character length could be up to 200 characters
+3. 'lookup_identifier' is not unique in EmissionFactors table
+4. Null category for electricity emission factors should not be transformed
+5. Air Travel lookup value will always be in format: `<flight range>, <passenger class>`
+6. Whenever new emission factor datadata or activity data is available, the ETL pipeline can be run to refresh DB
+7. Data is not manually changed in the DB or via admin role
+8. Emission Factors data is static and will not change
+9. Activity groups can be hard-coded, and therefore if new activities are ingested, this can be coded when available
 
 ## Executing locally
 
@@ -147,10 +150,18 @@ python manage.py test emission_calculator_backend/tests --verbosity=2
 ```
 
 ## Future Improvements
-1. Add foregn key constraint between tables and query the Scope and Category through that
+1. Potentially add foregn key constraint between tables and query the Scope and Category through that if `lookup_identifier` is unique
     - Means that most up-to-date Scope and Category is used
-    - Couldn't get done now as don't know if 'lookup_identifier' is unique so can't just filter on that without using unit field
+    - Couldn't get done now as don't know if `lookup_identifier` is unique so can't just filter on that without using unit field
     - Also results in extra table to be queried, potentially resulting API being less performant
 2. Split database into "raw" and "conform" instances to allow raw data to be queries alongside transformed data
 3. Use environment variables for variables in `config.py` file
-
+4. Deploying to AWS:
+    1. Replace import folder with S3 bucket
+    2. Allow Athena to query raw CSV files
+    3. Convert ETL script into Glue job
+    4. Link eventbridge with S3 bucket, and trigger glue job when file is loaded
+    5. Populate RDS with conformed data from glue job
+    6. Push API and Frontend container image to ECR
+    7. Deploy API into AWS Lambda using API gateway to query
+    8. Deploy Frontend into AWS Fargate

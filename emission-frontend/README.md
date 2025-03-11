@@ -1,4 +1,4 @@
-# Contacts Hub UI
+# Emissions Calculator UI
 User interface using the React framework displaying emissions data for various activities.
 The UI consists of 2 main components:
 - Emissions table

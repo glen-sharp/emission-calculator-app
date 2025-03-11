@@ -128,7 +128,7 @@ class EtlScriptTests(TestCase):
 
     def test_air_travel_distance(self):
         """
-        Testing air travel distances with a combination of miles and kilometers
+        Testing air travel distances with a combination of miles and kilometres
         """
         test_data_load_helper("air_travel_distance_test_data")
 

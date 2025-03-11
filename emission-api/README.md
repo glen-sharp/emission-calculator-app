@@ -36,7 +36,7 @@ Steps:
 5. Data validation (if failed, current entry is logged and skipped)
 6. Performs simple data transformations:
     - All strings are converted to lower-case
-    - Air travel distance unit is converted to kilometers
+    - Air travel distance unit is converted to kilometres
 7. Loads relevant tables with data
 
 ## Running locally
@@ -148,8 +148,23 @@ In the `config.py` file, there are various configurable parameters. These includ
 | AIR_TRAVEL_INGEST_FOLDER           | str       | Folder path containing Air Travel Emissions data files                       |
 | GOODS_AND_SERVICES_INGEST_FOLDER   | str       | Folder path containing Purchased Goods and Services Emissions data files     |
 | ELECTRICITY_INGEST_FOLDER          | str       | Folder path containing Electricity Emissions dats files                      |
-| MILES_TO_KM_CONVERSION             | float     | Corefficient to convert Miles -> Kilometers                                  |
+| MILES_TO_KM_CONVERSION             | float     | Corefficient to convert Miles -> Kilometres                                  |
 | LOG_LEVEL                          | str       | Level for types of logs output to stdout                                     |
+
+
+## Unit Tests
+
+| Test No. | Test Case Group           | Test Func Name                                   | Description                                                                  |
+| -------- | ------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------- |
+| 1.       | Emission Calculator Tests | ```test_api_output()```                          | Test valid API response schema, and ETL logic for calculating CO2e           |
+| 2.       | ETL Script Test           | ```test_air_travel_distance()```                 | Testing air travel distances with a combination of miles and kilometres      |
+| 3.       | ETL Script Test           | ```test_invalid_date()```                        | Test files with invalid date format                                          |
+| 4.       | ETL Script Test           | ```test_no_file_input()```                       | Testing empty ingest folders                                                 |
+| 5.       | ETL Script Test           | ```test_incorrect_emission_factor_column()```    | Lookup identifiers column of emission factors input file is incorrect        |
+| 6.       | ETL Script Test           | ```test_incorrect_air_travel_column()```         | Activity column of air travel input file is incorrect                        |
+| 7.       | ETL Script Test           | ```test_incorrect_electricity_column()```        | Electricty usage column of electricity input file is incorrect               |
+| 8.       | ETL Script Test           | ```test_incorrect_goods_and_services_column()``` | Spend units column of purchased goods and services input file is incorrect   |
+
 
 
 ## Assumptions

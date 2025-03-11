@@ -117,7 +117,7 @@ def _air_travel_data_ingest(air_travel_path: str) -> None:
             emission_factor_obj = _fetch_emission_factor_object(
                 activity=air_travel_obj.activity,
                 lookup_identifier=air_travel_obj.booking_type,
-                unit="kilometres",
+                unit=air_travel_obj.distance_unit,
             )
 
             # Validate one emission factor entry has been returned for activity

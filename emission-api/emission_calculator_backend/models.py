@@ -65,7 +65,7 @@ class InputAirTravel:
         self.date = kwargs["Date"]
         self.activity = kwargs["Activity"].lower()
         self.distance_travelled = float(kwargs["Distance travelled"]) if kwargs["Distance travelled"] else 0.0
-        self.distance_unit = kwargs["Distance units"]
+        self.distance_unit = kwargs["Distance units"].lower()
         self.flight_range = kwargs["Flight range"].lower()
         self.passenger_class = kwargs["Passenger class"].lower()
         self.booking_type = self.flight_range.lower() + ", " + self.passenger_class.lower()
@@ -85,13 +85,14 @@ class InputAirTravel:
 
     def transform_distance_unit(self) -> None:
         """
-        Function to validate and transform distance to kilometers
+        Function to validate and transform distance to kilometres
         """
         # Checks if distance unit is miles, if yes, unit is standardised
         if self.distance_unit == "miles":
-            # Convert distance to kilometers
+            # Convert distance to kilometres
             self.distance_travelled = self.distance_travelled * config.MILES_TO_KM_CONVERSION
-        elif self.distance_unit == "kilometers":
+            self.distance_unit = "kilometres"
+        elif self.distance_unit == "kilometres":
             self.distance_travelled = self.distance_travelled
         else:
             logger.error(f"No standard distance unit used. Unit: {self.distance_unit}")

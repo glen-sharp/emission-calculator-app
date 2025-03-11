@@ -13,7 +13,7 @@ Requirements:
 
 Before using this method, the required data files need to be in the ingest folders specified [here](emission-api/README.md#data-load), and the user needs to be logged into docker.
 
-Script to populate DB, build container images and run containers for API and Frontend:
+Building and starting container images:
 ```bash
 docker-compose up -d
 ```

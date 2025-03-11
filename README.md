@@ -6,7 +6,33 @@ Documentation for each of the components can be found here:
 - [API Documentation](emission-api/README.md)
 - [Frontend Documentation](emission-frontend/README.md)
 
-## Running Locally via Pyhton and Node.js
+## Running Locally via Docker
+
+Requirements:
+- docker daemon
+
+Before using this method, the required data files need to be in the ingest folders specified [here](emission-api/README.md#data-load), and the user needs to be logged into docker.
+
+Script to populate DB, build container images and run containers for API and Frontend:
+```bash
+docker-compose up -d
+```
+
+Frontend can be accessed via `http://localhost:3000/`
+
+API can be accessed via `http://localhost:8000/`
+
+Stop containers:
+```bash
+docker-compose stop
+```
+
+Remove containers:
+```bash
+docker-compose rm
+```
+
+## Running Locally via Python and Node.js
 
 Requirements:
 - python:3.9+
@@ -26,28 +52,3 @@ To run the application locally, the following steps need to be followed.
 
 1. Navigate to Frontend directory
 2. Download Node.js and run required npm terminal commands
-
-## Running Locally via Docker
-
-Requirements:
-- docker daemon
-
-Before using this method, the required data files need to be in the ingest folders specified [here](emission-api/README.md#data-load), and the user needs to be logged into docker.
-
-Script to populate DB, build container images and run containers for API and Frontend:
-```bash
-docker-compose up -d
-```
-
-Frontend can be accessed via `http://localhost:3000/`
-API can be accessed via `http://localhost:8000/`
-
-Stop containers:
-```bash
-docker-compose stop
-```
-
-Remove containers:
-```bash
-docker-compose rm
-```

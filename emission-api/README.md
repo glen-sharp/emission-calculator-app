@@ -188,6 +188,7 @@ In the `config.py` file, there are various configurable parameters. These includ
 2. Split database into "raw" and "conform" instances to allow raw data to be queries alongside transformed data
 3. Data validation for input CSV files
 4. Use environment variables for variables in `config.py` file
+5. Run ETL pipeline for non-emission factor files asynchronously using eg Celery
 5. Create CI/CD pipeline that runs unit test, static code analysis and pushes container images to a container registry then deploys
 5. Deploying to AWS:
     1. Replace import folder with S3 bucket

@@ -33,7 +33,7 @@ Steps:
 2. Creates a new DB using the DB schema in the `models.py` file
 3. (Through execution of ETL script) Finds all CSV files in the ingest folders
 4. Extracts data from CSV files
-5. Data validation (if failed, current entry is logged and skipped)
+5. Through 'conform' layer objects, apply data validation (if failed, current entry is logged and skipped)
 6. Performs simple data transformations:
     - All strings are converted to lower-case
     - Air travel distance unit is converted to kilometres

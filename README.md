@@ -40,7 +40,7 @@ Requirements:
 
 To run the application locally, the following steps need to be followed.
 
-### API steps as described here: [API local deployment instructions](emission-api/README.md#executing-locally)
+### API steps as described here: [API local deployment instructions](emission-api/README.md#running-locally)
 
 1. Navigate to API directory 
 2. Create and start virtual environment

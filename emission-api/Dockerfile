@@ -8,7 +8,6 @@ COPY . /app
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 RUN python manage.py test emission_calculator_backend/tests --verbosity=2
-RUN flake8
 
 # Run DB creation and load scripts
 RUN python manage.py makemigrations

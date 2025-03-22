@@ -8,6 +8,26 @@ import config
 
 logger = logging.getLogger("root")
 
+#######################
+# Helper Functions
+#######################
+
+
+def convert_date(date: str) -> datetime.date:
+    """
+    Function to convert data string into date type
+
+    :param date: Input date as string type
+
+    :return: Date in as date type
+    """
+    try:
+        date = datetime.strptime(date, "%d/%m/%Y").date()
+    except ValueError:
+        logger.error(f"Incorrect Air Travel datetime format. Data: {date}")
+        raise ValueError(f"Incorrect Air Travel datetime format. Data: {date}")
+    return date
+
 
 class EmissionFactors(models.Model):
     id = models.AutoField(primary_key=True)
@@ -70,7 +90,7 @@ class InputAirTravel:
         self.passenger_class = kwargs["Passenger class"].lower()
         self.booking_type = self.flight_range.lower() + ", " + self.passenger_class.lower()
         self.transform_distance_unit()
-        self.convert_date()
+        self.date = convert_date(self.date)
 
     def __str__(self):
         return json.dumps({
@@ -98,16 +118,6 @@ class InputAirTravel:
             logger.error(f"No standard distance unit used. Unit: {self.distance_unit}")
             raise ValueError(f"Air Travel distance unit validation failed. Unit: {self.distance_unit}")
 
-    def convert_date(self) -> None:
-        """
-        Function to convert data string into date type
-        """
-        try:
-            self.date = datetime.strptime(self.date, "%d/%m/%Y").date()
-        except ValueError:
-            logger.error(f"Incorrect Air Travel datetime format. Data: {self.date}")
-            raise ValueError(f"Incorrect Air Travel datetime format. Data: {self.date}")
-
 
 class PurchasedGoodsAndServices(models.Model):
     id = models.AutoField(primary_key=True)
@@ -131,7 +141,7 @@ class InputPurchasedGoodsAndServices:
         self.supplier_category = kwargs["Supplier category"].lower()
         self.spend = float(kwargs["Spend"]) if kwargs["Spend"] else 0.0
         self.spend_unit = kwargs["Spend units"].lower()
-        self.convert_date()
+        self.date = convert_date(self.date)
 
     def __str__(self):
         return json.dumps({
@@ -141,16 +151,6 @@ class InputPurchasedGoodsAndServices:
             "spend": self.spend,
             "spend_unit": self.spend_unit,
         })
-
-    def convert_date(self) -> None:
-        """
-        Function to convert data string into date type
-        """
-        try:
-            self.date = datetime.strptime(self.date, "%d/%m/%Y").date()
-        except ValueError:
-            logger.error(f"Incorrect Purchased Goods and Services datetime format. Data: {self.date}")
-            raise ValueError(f"Incorrect Purchased Goods and Services datetime format. Data: {self.date}")
 
 
 class Electricity(models.Model):
@@ -175,7 +175,7 @@ class InputElectricity:
         self.country = kwargs["Country"].lower()
         self.electricity_usage = float(kwargs["Electricity Usage"]) if kwargs["Electricity Usage"] else 0.0
         self.unit = kwargs["Units"].lower()
-        self.convert_date()
+        self.date = convert_date(self.date)
 
     def __str__(self):
         return json.dumps({
@@ -186,12 +186,3 @@ class InputElectricity:
             "unit": self.unit,
         })
 
-    def convert_date(self) -> None:
-        """
-        Function to convert data string into date type
-        """
-        try:
-            self.date = datetime.strptime(self.date, "%d/%m/%Y").date()
-        except ValueError:
-            logger.error(f"Incorrect Electricity datetime format. Data: {self.date}")
-            raise ValueError(f"Incorrect Electricity datetime format. Data: {self.date}")

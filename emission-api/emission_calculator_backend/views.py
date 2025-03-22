@@ -1,12 +1,53 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Sum
+from django.db.models import Sum, Model
 import logging
 
 import emission_calculator_backend.models as models
 
 logger = logging.getLogger("root")
+
+#######################
+# Helper Functions
+#######################
+
+
+def fetch_activity_query(activity_model: Model):
+    """
+    Function returning query containing activity fields
+
+    :param activity_model: Django model for activity
+
+    :return: Activity data query
+    """
+    query = activity_model.objects.values(
+        "co2e",
+        "scope",
+        "category",
+        "activity",
+    )
+
+    return query
+
+
+def fetch_emission_total(activity_model: Model):
+    """
+    Function returning total for CO2e for a specific activity
+
+    :param activity_model: Django model for activity
+
+    :return: CO2e total
+    """
+    db_total = activity_model.objects.aggregate(Sum("co2e"))["co2e__sum"]
+
+    total = db_total if db_total else 0
+
+    return total
+
+#######################
+# API Views
+#######################
 
 
 @api_view(["GET"])
@@ -17,42 +58,21 @@ def emissions(request) -> Response:
 
     try:
         # Query for all air travel emission info
-        air_travel = models.AirTravel.objects.values(
-            "co2e",
-            "scope",
-            "category",
-            "activity",
-        )
+        air_travel = fetch_activity_query(models.AirTravel)
 
         # Query for all purchased goods and services emission info
-        purchased_goods_and_services = models.PurchasedGoodsAndServices.objects.values(
-            "co2e",
-            "scope",
-            "category",
-            "activity",
-        )
+        purchased_goods_and_services = fetch_activity_query(models.PurchasedGoodsAndServices)
 
         # Query for all electricity emission info
-        electricity = models.Electricity.objects.values(
-            "co2e",
-            "scope",
-            "category",
-            "activity",
-        )
+        electricity = fetch_activity_query(models.Electricity)
 
         # Union all tables together
         output = air_travel.union(purchased_goods_and_services, electricity, all=True).order_by("-co2e")
 
         # Calculate total CO2e values for each activity. If None is returned, default to 0
-        air_travel_total = models.AirTravel.objects.aggregate(Sum("co2e"))["co2e__sum"] \
-            if models.AirTravel.objects.aggregate(Sum("co2e"))["co2e__sum"] else 0
-        purchased_goods_and_services_total = models.PurchasedGoodsAndServices.objects.aggregate(
-            Sum("co2e"),
-        )["co2e__sum"] if models.PurchasedGoodsAndServices.objects.aggregate(
-            Sum("co2e"),
-        )["co2e__sum"] else 0
-        electricity_total = models.Electricity.objects.aggregate(Sum("co2e"))["co2e__sum"] \
-            if models.Electricity.objects.aggregate(Sum("co2e"))["co2e__sum"] else 0
+        air_travel_total = fetch_emission_total(models.AirTravel)
+        purchased_goods_and_services_total = fetch_emission_total(models.PurchasedGoodsAndServices)
+        electricity_total = fetch_emission_total(models.Electricity)
 
         # Calculate total CO2e across all activities
         total = air_travel_total + purchased_goods_and_services_total + electricity_total

@@ -1,9 +1,9 @@
-import Cookies from 'js-cookie';
-
-async function handleResponse(res) {
-     if (res.status !== 200) {
+function handleResponse(res) {
+    if (res.status == 401) {
+        window.location.replace('/login');
+    } else if (res.status !== 200) {
         throw new Error('Error');
-     }
+    }
     return res;
   }  
 
@@ -42,11 +42,11 @@ function RegisterUser(user_info) {
 function UserLogin(login_info) {
     return fetch('http://localhost:8000/auth/login/', {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
           },
         body: JSON.stringify(login_info)
-
     })
     .then(res => handleResponse(res))
     .then(data => {
@@ -57,14 +57,24 @@ function UserLogin(login_info) {
     });
 }
 
-// headers: {
-//     'Content-Type': 'application/json',
-//     'X-CSRFToken': Cookies.get('csrftoken'),
-//   },      
+function UserLogout() {
+    return fetch('http://localhost:8000/auth/logout/', {
+        method: 'GET',
+        credentials: 'include',
+    })
+    .then(res => handleResponse(res))
+    .then(data => {
+        return data
+    })
+    .catch((error) => {
+        throw error;
+    });
+}
 
 
 export {
     GetEmissions,
     RegisterUser,
     UserLogin,
+    UserLogout,
 }

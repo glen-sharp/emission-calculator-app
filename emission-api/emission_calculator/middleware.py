@@ -11,7 +11,9 @@ def auth_middleware(get_response):
             "/auth/login/",
         ]:
             # Renders request
-            response = Response(status=status.HTTP_401_UNAUTHORIZED)
+            response = Response(
+                data={"message": "Not authenticated"}, status=status.HTTP_401_UNAUTHORIZED,
+            )
             response.accepted_renderer = JSONRenderer()
             response.accepted_media_type = "application/json"
             response.renderer_context = {}
@@ -21,13 +23,12 @@ def auth_middleware(get_response):
 
             if not token:
                 # Checks is JWT token is present
-                response.data = {"message": "No auth token"}
                 return response
             try:
                 # Checks if JWT token has expired
                 jwt.decode(token, "secret", algorithms=["HS256"])
             except jwt.ExpiredSignatureError:
-                response.data = {"message": "Expired auth token"}
+                response.delete_cookie("jwt")
                 return response
 
         return get_response(request)

@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 
+import { useNavigate } from 'react-router-dom';
 
 import './Login.css'
 import { UserLogin } from "../utils/serverRequests";
@@ -17,7 +18,13 @@ export default function UserLoginInput() {
 
     const [errorState, setErrorState] = useState("");
 
-    async function user_login() {
+    const navigate = useNavigate();
+
+    function redirect() {
+        navigate("/emissions-summary")
+    }
+
+    async function LoginUser() {
         var contact = {
             email: emailValue,
             password: passwordValue
@@ -31,72 +38,74 @@ export default function UserLoginInput() {
 
             setEmailValue("");
             setPasswordValue("");
+            redirect()
         } catch (error) {
             setErrorState(true);
         }
     }
 
     return (
-        <div className="login-input-wrapper">
-            <div className="title-wrapper">
-                <h1>
-                    Emissions Hub Registration
-                </h1>
-            </div>
-            <div>
-                <Box
-                    component="form"
-                    sx={{ '& > :not(style)': { width: '100%' } }}
-                    noValidate
-                    autoComplete="off"
-                >
-                    <div className="email-password-wrapper">
-                        <div className="text-field">
-                            <TextField
-                                id="email-input"
-                                label="Email"
-                                variant="filled"
-                                value={emailValue}
-                                inputProps={{
-                                    maxLength: 100,
-                                }}
-                                sx={{ width: "15rem" }}
-                                onChange={(e) => {
-                                    setEmailValue(e.target.value);
-                                }}
-                                onKeyDown={(e) => {
-                                    if (emailValue && passwordValue && e.key === "Enter")
-                                        user_login()
-                                }}
-                            />
+        <div className="login-wrapper">
+            <div className="login-input-wrapper">
+                <div className="title-wrapper">
+                    <h1>
+                        Login
+                    </h1>
+                </div>
+                <div>
+                    <Box
+                        component="form"
+                        sx={{ '& > :not(style)': { width: '100%' } }}
+                        noValidate
+                        autoComplete="off"
+                    >
+                        <div className="email-password-wrapper">
+                            <div className="text-field">
+                                <TextField
+                                    id="email-input"
+                                    label="Email"
+                                    variant="filled"
+                                    value={emailValue}
+                                    inputProps={{
+                                        maxLength: 100,
+                                    }}
+                                    sx={{ width: "15rem" }}
+                                    onChange={(e) => {
+                                        setEmailValue(e.target.value);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (emailValue && passwordValue && e.key === "Enter")
+                                            LoginUser()
+                                    }}
+                                />
+                            </div>
+                            <div className="text-field">
+                                <TextField
+                                    id="password-input"
+                                    label="Password"
+                                    type="password"
+                                    variant="filled"
+                                    value={passwordValue}
+                                    inputProps={{
+                                        maxLength: 50,
+                                    }}
+                                    sx={{ width: "15rem" }}
+                                    onChange={(e) => {
+                                        setPasswordValue(e.target.value);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (emailValue && passwordValue && e.key === "Enter")
+                                            LoginUser()
+                                    }}
+                                />
+                            </div>
                         </div>
-                        <div className="text-field">
-                            <TextField
-                                id="password-input"
-                                label="Password"
-                                type="password"
-                                variant="filled"
-                                value={passwordValue}
-                                inputProps={{
-                                    maxLength: 50,
-                                }}
-                                sx={{ width: "15rem" }}
-                                onChange={(e) => {
-                                    setPasswordValue(e.target.value);
-                                }}
-                                onKeyDown={(e) => {
-                                    if (emailValue && passwordValue && e.key === "Enter")
-                                        user_login()
-                                }}
-                            />
-                        </div>
-                    </div>
-                </Box>
-            </div>
-            <div className="button-error-wrapper">
+                    </Box>
+                </div>
+                <div className="button-error-wrapper">
                     <Button
                         variant="contained"
-                        onClick={() => user_login()}
+                        onClick={() => LoginUser()}
                         disabled={emailValue && passwordValue ? false : true}
                     >Login</Button>
                     {errorState && (
@@ -105,6 +114,11 @@ export default function UserLoginInput() {
                             style={{ marginTop: '1px', marginLeft: '20px', width: '17em' }}
                         >Oops! Something went wrong.</Alert>
                     )}
+                </div>
+            </div>
+            <div className="register-link-wrapper">
+                <p>Not registered? Create user <a href="/register" rel="noreferrer">here</a></p>
+                    
             </div>
         </div>
     )

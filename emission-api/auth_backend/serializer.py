@@ -18,6 +18,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, data):
         email = data["email"]
+        username = email
         first_name = data["first_name"]
         last_name = data["last_name"]
         password = data["password"]
@@ -26,6 +27,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         new_user = user.objects.create(
             email=email,
+            username=username,
             first_name=first_name,
             last_name=last_name,
         )

@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTHENTICATION_BACKENDS = ["auth_backend.auth.EmailBackend"]
 
 # Application definition
 
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "emission_calculator.middleware.auth_middleware",
 ]
 
 ROOT_URLCONF = "emission_calculator.urls"
@@ -134,3 +136,9 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+
+# CSRF_COOKIE_DOMAIN = "localhost"
+
+CORS_ALLOW_HEADERS = ["Content-Type", "x-csrftoken", "Access-Control-Allow-Credentials"]
+
+CORS_ALLOW_CREDENTIALS = True

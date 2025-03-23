@@ -17,9 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from emission_calculator_backend import views
+from emission_calculator_backend import views as emission_views
+from auth_backend import views as auth_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("emissions/", views.emissions, name="emissions"),
+    path("register/", auth_views.register_user, name="register"),
+    path("auth/login/", auth_views.user_login, name="login"),
+    path("auth/logout/", auth_views.user_logout, name="logout"),
+    path("emissions/", emission_views.emissions, name="emissions"),
 ]

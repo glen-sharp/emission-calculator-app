@@ -5,6 +5,9 @@ import logging
 
 from emission_calculator_backend.scripts.import_data import run
 
+JWT = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZXhwIjoxNzQyNjg2MzA0LCJpYXQiOjE3" \
+      + "NDI2ODI3MDR9.Y8oUbSmmjs3CM51AqTearFFZQM7IWW2zq75jO2rofeg"
+
 
 def test_data_load_helper(test_data_dir: str) -> None:
     """
@@ -38,6 +41,7 @@ class EmissionCalculatorTests(TestCase):
         Test API output.
         Test valid API response schema, and ETL logic for calculating CO2e
         """
+        self.client.cookies.load({"jwt": JWT})
         response = self.client.get("/emissions/")
 
         expected_output = {
@@ -132,6 +136,7 @@ class EtlScriptTests(TestCase):
         """
         test_data_load_helper("air_travel_distance_test_data")
 
+        self.client.cookies.load({"jwt": JWT})
         response = self.client.get("/emissions/")
 
         expected_output = {
@@ -177,6 +182,7 @@ class EtlScriptTests(TestCase):
         """
         test_data_load_helper("invalid_date_test_data")
 
+        self.client.cookies.load({"jwt": JWT})
         response = self.client.get("/emissions/")
 
         expected_output = {
@@ -217,6 +223,7 @@ class EtlScriptTests(TestCase):
         """
         test_data_load_helper("no_file_test_data")
 
+        self.client.cookies.load({"jwt": JWT})
         response = self.client.get("/emissions/")
 
         expected_output = {

@@ -1,0 +1,20 @@
+.login-input-wrapper {
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0.1px solid black;
+  margin-top: 5rem;
+  padding: 20px;
+}
+
+.button-error-wrapper {
+  margin: 10px;
+}
+
+.email-password-wrapper {
+  flex-direction: row;
+  display: flex;
+}

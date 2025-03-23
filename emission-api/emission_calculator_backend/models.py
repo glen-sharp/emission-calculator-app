@@ -185,4 +185,3 @@ class InputElectricity:
             "electricity_usage": self.electricity_usage,
             "unit": self.unit,
         })
-

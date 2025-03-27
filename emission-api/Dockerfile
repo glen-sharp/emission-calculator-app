@@ -15,6 +15,6 @@ RUN python manage.py migrate
 RUN python manage.py runscript import_data
 
 # Expose port 10 for the development server to listen on
-EXPOSE 10
+EXPOSE 8000
 # Run the development server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:10"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

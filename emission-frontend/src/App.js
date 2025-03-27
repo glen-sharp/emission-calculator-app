@@ -17,7 +17,7 @@ function App() {
         </Route>
         <Route exact path="/logout" element={<LogOut/>}>
         </Route>
-        <Route exact path="/emissions-summary" element={<EmissionsPage/>}>
+        <Route exact path="/" element={<EmissionsPage/>}>
         </Route>
       </Routes>
     </Router>

@@ -5,3 +5,4 @@ django-extensions==3.2.3
 PyJWT==2.4.0
 pytz==2021.1
 flake8==7.0.0
+dotenv==0.9.9

@@ -1,6 +1,5 @@
 import React from "react";
 import { useState } from "react";
-import { useNavigation } from "react-router-dom";
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -97,10 +96,10 @@ export default function UserInfoInput() {
                                     helperText={
                                         !isForenameValid && forenameValue ? "Input must be string" : ""
                                     }
-                                // onKeyDown={(e) => {
-                                //     if (forenameValue && surnameValue && phoneValue && addressValue && e.key === "Enter" && isForenameNumValue && isSurnameNumValue && isPhoneNumValue)
-                                //         add_contact()
-                                // }}
+                                    onKeyDown={(e) => {
+                                        if (forenameValue && surnameValue && emailValue && passwordValue && e.key === "Enter" && isForenameValid && isSurnameValid && isEmailValid && isPasswordValid)
+                                            register_user()
+                                    }}
                                 />
                             </div>
                             <div className="text-field">
@@ -121,10 +120,10 @@ export default function UserInfoInput() {
                                     helperText={
                                         !isSurnameValid && surnameValue ? "Input must be string" : ""
                                     }
-                                // onKeyDown={(e) => {
-                                //     if (forenameValue && surnameValue && phoneValue && addressValue && e.key === "Enter" && isForenameNumValue && isSurnameNumValue && isPhoneNumValue)
-                                //         add_contact()
-                                // }}
+                                    onKeyDown={(e) => {
+                                        if (forenameValue && surnameValue && emailValue && passwordValue && e.key === "Enter" && isForenameValid && isSurnameValid && isEmailValid && isPasswordValid)
+                                            register_user()
+                                    }}
                                 />
                             </div>
                         </div>
@@ -147,10 +146,10 @@ export default function UserInfoInput() {
                                     helperText={
                                         !isEmailValid && emailValue ? "Email must be in correct format" : ""
                                     }
-                                // onKeyDown={(e) => {
-                                //     if (forenameValue && surnameValue && phoneValue && addressValue && e.key === "Enter" && isForenameNumValue && isSurnameNumValue && isPhoneNumValue)
-                                //         add_contact()
-                                // }}
+                                    onKeyDown={(e) => {
+                                        if (forenameValue && surnameValue && emailValue && passwordValue && e.key === "Enter" && isForenameValid && isSurnameValid && isEmailValid && isPasswordValid)
+                                            register_user()
+                                    }}
                                 />
                             </div>
                             <div className="text-field">
@@ -172,10 +171,10 @@ export default function UserInfoInput() {
                                     helperText={
                                         !isPasswordValid && passwordValue ? "Password must be in correct format" : ""
                                     }
-                                // onKeyDown={(e) => {
-                                //     if (forenameValue && surnameValue && phoneValue && addressValue && e.key === "Enter" && isForenameNumValue && isSurnameNumValue && isPhoneNumValue)
-                                //         add_contact()
-                                // }}
+                                    onKeyDown={(e) => {
+                                        if (forenameValue && surnameValue && emailValue && passwordValue && e.key === "Enter" && isForenameValid && isSurnameValid && isEmailValid && isPasswordValid)
+                                            register_user()
+                                    }}
                                 />
                             </div>
                         </div>

@@ -34,12 +34,15 @@ def register_user(request):
 
 @api_view(["POST"])
 def user_login(request):
+    # if not request.user.is_authenticated:
     user = authenticate(username=request.data["email"], password=request.data["password"])
+    if not user:
+        return Response({"message": "User does not exist"}, status=status.HTTP_403_FORBIDDEN)
     login(request, user)
     token = generate_jwt(user)
     response = Response({"message": "User logged in"})
     response.set_cookie(
-        key="jwt", value=token, samesite="None", secure="True", httponly="False",
+        key="jwt", value=token,
     )
     return response
 

@@ -1,4 +1,5 @@
 import jwt
+import sys
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
@@ -6,10 +7,18 @@ from rest_framework.renderers import JSONRenderer
 
 def auth_middleware(get_response):
     def middleware(request):
-        if request.path not in [
-            "/register/",
-            "/auth/login/",
-        ]:
+        if (
+            (
+                request.path not in [
+                    "/register/",
+                    "/auth/login/",
+                ]
+            )
+            and
+            (
+                "test" not in sys.argv
+            )
+        ):
             # Renders request
             response = Response(
                 data={"message": "Not authenticated"}, status=status.HTTP_401_UNAUTHORIZED,

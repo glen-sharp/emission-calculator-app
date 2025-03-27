@@ -21,7 +21,7 @@ export default function UserLoginInput() {
     const navigate = useNavigate();
 
     function redirect() {
-        navigate("/emissions-summary")
+        navigate("/")
     }
 
     async function LoginUser() {
@@ -40,7 +40,7 @@ export default function UserLoginInput() {
             setPasswordValue("");
             redirect()
         } catch (error) {
-            setErrorState(true);
+            setErrorState(error);
         }
     }
 
@@ -111,14 +111,15 @@ export default function UserLoginInput() {
                     {errorState && (
                         <Alert
                             severity="error"
-                            style={{ marginTop: '1px', marginLeft: '20px', width: '17em' }}
-                        >Oops! Something went wrong.</Alert>
+                            style={{ marginTop: '1px', marginLeft: '20px', maxWidth: '17em' }}
+                        >
+                            {errorState.message === "403" ? "User does not exist" : "Oops! Something went wrong."}
+                        </Alert>
                     )}
                 </div>
             </div>
             <div className="register-link-wrapper">
                 <p>Not registered? Create user <a href="/register" rel="noreferrer">here</a></p>
-                    
             </div>
         </div>
     )

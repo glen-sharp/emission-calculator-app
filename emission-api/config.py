@@ -1,7 +1,4 @@
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 EMISSION_FACTOR_INGEST_FOLDER = "./emission_calculator_backend/import/emission_factors/"
 AIR_TRAVEL_INGEST_FOLDER = "./emission_calculator_backend/import/air_travel/"

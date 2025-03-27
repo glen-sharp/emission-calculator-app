@@ -3,7 +3,7 @@ services:
     container_name: emission-api
     build: emission-api/.
     ports:
-      - 8000:10
+      - 8000:8000
   frontend:
     container_name: emission-frontend
     build: emission-frontend/.

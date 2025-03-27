@@ -12,4 +12,4 @@ MILES_TO_KM_CONVERSION = 1.60934
 
 LOG_LEVEL = "INFO"
 
-ORIGIN = os.environ.get("ORIGIN", "192.168.0.148")
+ORIGIN = os.environ.get("ORIGIN", "239.255.255.250")

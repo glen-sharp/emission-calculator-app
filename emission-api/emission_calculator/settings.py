@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import sys
 
-from config import ORIGIN
-
-
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,9 +27,10 @@ SECRET_KEY = "django-insecure--ij6^d_ny#-5x4=3thu#!0=o_tt0h7-k9s3lcv^8^31lh^sf%e
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "192.168.0.152",
+    "192.168.0.148",
     "127.0.0.1",
     "localhost",
+    "0.0.0.0",
 ]
 
 AUTHENTICATION_BACKENDS = ["auth_backend.auth.EmailBackend"]
@@ -146,7 +144,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CSRF_COOKIE_DOMAIN = "192.168.0.148:3000"
 
-CSRF_TRUSTED_ORIGINS = [f"http://192.168.0.152:3000"]
+CSRF_TRUSTED_ORIGINS = ["http://192.168.0.148:3000"]
 
 # CORS_ALLOW_HEADERS = ["Content-Type", "X-CSRFToken", "Access-Control-Allow-Credentials", "*"]
 
@@ -155,8 +153,8 @@ CORS_ALLOW_CREDENTIALS = True
 # CSRF_COOKIE_SECURE = True
 
 
-CORS_ALLOWED_ORIGINS = [f"http://192.168.0.152:3000", "http://localhost:3000"]
+CORS_ALLOWED_ORIGINS = ["http://192.168.0.148:3000", "http://localhost:3000"]
 
-CSRF_COOKIE_DOMAIN = "192.168.0.152"
+CSRF_COOKIE_DOMAIN = "192.168.0.148"
 
 CORS_ALLOW_HEADERS = ["Content-Type", "X-CSRFToken", "Access-Control-Allow-Credentials"]

@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 
-const ipAddress = "239.255.255.250";
+const ipAddress = "192.168.0.148";
 
 const BASE_URL = 'http://' + ipAddress + ':8000/'
 

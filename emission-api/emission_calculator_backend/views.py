@@ -55,7 +55,6 @@ def emissions(request) -> Response:
     """
     Function returning emission data for each activity
     """
-
     try:
         # Query for all air travel emission info
         air_travel = fetch_activity_query(models.AirTravel)

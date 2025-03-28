@@ -15,8 +15,10 @@ Before using this method, the required data files need to be in the ingest folde
 
 Building and starting container images:
 ```bash
-docker-compose up -d
+ORIGIN=<host IP address> docker-compose up -d
 ```
+
+If not value for `ORIGIN` is provided, this will default to `localhost`
 
 Frontend can be accessed via `http://localhost:3000/`
 

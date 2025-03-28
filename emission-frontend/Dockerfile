@@ -5,6 +5,8 @@ COPY package.json ./
 COPY package-lock.json ./
 RUN npm install
 COPY . .
+ARG ORIGIN
+ENV REACT_APP_HOST_IP_ADDRESS $ORIGIN
 RUN npm run build
 
 # Production stage

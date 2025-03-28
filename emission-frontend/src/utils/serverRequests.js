@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie';
 
-const ipAddress = "192.168.0.152";
+const hostIpAddress = process.env.REACT_APP_HOST_IP_ADDRESS;
 
-const BASE_URL = 'http://' + ipAddress + ':8000/'
+const BASE_URL = 'http://' + hostIpAddress + ':8000/'
 
 function handleResponse(res) {
     if (res.status === 401) {
